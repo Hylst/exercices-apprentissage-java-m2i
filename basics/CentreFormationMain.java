@@ -1,3 +1,6 @@
+import java.util.Arrays;
+import java.util.List;
+
 public class CentreFormationMain {
     // CENTRE DE FORMATION AFPA
     public static void main(String[] args) {
@@ -9,20 +12,15 @@ public class CentreFormationMain {
         Specialite php = new Specialite("PHP");
 
         // Liste de toutes les spécialités
-        Specialite[] toutesSpecialites = {javaJee, htmlCss, gestionProjet, js, php};
+        List<Specialite> toutesSpecialites = Arrays.asList(javaJee, htmlCss, gestionProjet, js, php);
 
         // 2. Création des 4 enseignants
-        Enseignant[] enseignants = new Enseignant[4];
-
-        // Les deux premiers enseignent JAVA/JEE
-        enseignants[0] = new Enseignant("M. Dupont", javaJee);
-        enseignants[1] = new Enseignant("Mme. Martin", javaJee);
-
-        // Le 3ème enseigne le PHP
-        enseignants[2] = new Enseignant("M. Bernard", php);
-
-        // Le dernier du JS
-        enseignants[3] = new Enseignant("Mme. Dubois", js);
+        List<Enseignant> enseignants = Arrays.asList(
+                new Enseignant("M. Dupont", javaJee),
+                new Enseignant("Mme. Martin", javaJee),
+                new Enseignant("M. Bernard", php),
+                new Enseignant("Mme. Dubois", js)
+        );
 
         // 3. Affichage des enseignants par spécialité
         System.out.println("=== LISTE DES ENSEIGNANTS PAR SPÉCIALITÉ ===\n");
@@ -43,6 +41,48 @@ public class CentreFormationMain {
 
             if (!trouve) {
                 System.out.println("Aucun enseignant pour la spécialité " + specialite.getNom());
+            }
+
+            System.out.println();
+        }
+
+        // PARTIE ÉTUDIANTS (corrigée)
+
+        // Création des filières
+        Filiere cda = new Filiere("cda", "CDA");
+        Filiere marketing = new Filiere("marketing", "Marketing");
+        Filiere assistanceVie = new Filiere("assistance_vie", "Assistance de vie");
+
+        // Liste de toutes les filières
+        List<Filiere> toutesFilieres = Arrays.asList(cda, marketing, assistanceVie);
+
+        // Création des 5 étudiants (en supposant qu'il existe une classe Etudiant)
+        List<Etudiant> etudiants = Arrays.asList(
+                new Etudiant("Simpson", "Homer", cda),
+                new Etudiant("Simpson", "Bart", cda),
+                new Etudiant("Sultan", "Vanessa", marketing),
+                new Etudiant("Simpson", "Marge", marketing),
+                new Etudiant("Simpson", "Lisa", marketing)
+        );
+
+        System.out.println("\n=== LISTE DES ÉTUDIANTS PAR FILIÈRE ===\n");
+
+        for (Filiere filiere : toutesFilieres) {
+            System.out.println("Filière : " + filiere.getLibelle());
+            System.out.println("-----------------------------------");
+
+            boolean trouveEtudiant = false;
+
+            for (Etudiant etudiant : etudiants) {
+                // Comparaison par nom de filière
+                if (etudiant.getFiliere().getLibelle().equals(filiere.getLibelle())) {
+                    System.out.println("- " + etudiant.getPrenom() + " " + etudiant.getNom());
+                    trouveEtudiant = true;
+                }
+            }
+
+            if (!trouveEtudiant) {
+                System.out.println("Aucun étudiant pour la filière " + filiere.getLibelle());
             }
 
             System.out.println();
