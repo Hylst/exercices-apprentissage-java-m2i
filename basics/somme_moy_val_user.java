@@ -9,6 +9,7 @@ public class main {
         System.out.println("Combien de valeurs à entrer ? ");
         int nombreValeurs = scanner.nextInt();
 
+
         // taille positive ?
         if (nombreValeurs <= 0) {
             System.out.println("Erreur : la taille doit être un nombre positif !");
