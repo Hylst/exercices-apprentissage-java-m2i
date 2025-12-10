@@ -3,37 +3,39 @@ import java.util.List;
 import java.util.Scanner;
 
 public class CentreFormationMain {
-    // Déclaration des listes comme variables de classe pour y accéder partout
-    private static List<Enseignant> enseignants;
+    // Déclaration des listes comme variables de classe
+    private static List<Enseignant> tousLesEnseignants;
     private static List<Etudiant> etudiants;
     private static List<Filiere> toutesFilieres;
+    private static List<Specialite> toutesSpecialites;
 
     public static void main(String[] args) {
         System.out.println("=== CENTRE DE FORMATION AFPA ===\n");
 
-        // Création des 5 spécialités
+        // Création des spécialités
         Specialite javaJee = new Specialite("JAVA/JEE");
         Specialite htmlCss = new Specialite("HTML/CSS");
         Specialite gestionProjet = new Specialite("Gestion de projet");
         Specialite js = new Specialite("JS");
         Specialite php = new Specialite("PHP");
 
-        List<Specialite> toutesSpecialites = Arrays.asList(javaJee, htmlCss, gestionProjet, js, php);
+        toutesSpecialites = Arrays.asList(javaJee, htmlCss, gestionProjet, js, php);
 
-        enseignants = Arrays.asList(
-                new Enseignant("M. Dupont", javaJee),
-                new Enseignant("Mme. Martin", javaJee),
-                new Enseignant("M. Bernard", php),
-                new Enseignant("Mme. Dubois", js)
-        );
+        // Création de TOUS les enseignants
+        Enseignant dupont = new Enseignant("M. Dupont", javaJee);
+        Enseignant martin = new Enseignant("Mme. Martin", javaJee);
+        Enseignant bernard = new Enseignant("M. Bernard", php);
+        Enseignant dubois = new Enseignant("Mme. Dubois", js);
+        Enseignant burns = new Enseignant("Charles Montgomery Burns", javaJee);
+        Enseignant kas = new Enseignant("Zack Kas", gestionProjet);
+        Enseignant aucun = new Enseignant("Aucun formateur", null);
 
-        Enseignant formateurCDA = new Enseignant("Charles Montgomery Burns", javaJee);
-        Enseignant formateurMarketing = new Enseignant("Zack Kas", gestionProjet);
-        Enseignant formateurAssistance = new Enseignant("Aucun formateur", null);
+        tousLesEnseignants = Arrays.asList(dupont, martin, bernard, dubois, burns, kas, aucun);
 
-        Filiere cda = new Filiere("cda", "CDA", formateurCDA);
-        Filiere marketing = new Filiere("marketing", "Marketing", formateurMarketing);
-        Filiere assistanceVie = new Filiere("assistance_vie", "Assistance de vie", formateurAssistance);
+        // Création des filières avec les enseignants existants
+        Filiere cda = new Filiere("cda", "CDA", burns);
+        Filiere marketing = new Filiere("marketing", "Marketing", kas);
+        Filiere assistanceVie = new Filiere("assistance_vie", "Assistance de vie", aucun);
 
         toutesFilieres = Arrays.asList(cda, marketing, assistanceVie);
 
@@ -46,7 +48,7 @@ public class CentreFormationMain {
 
             boolean trouve = false;
 
-            for (Enseignant enseignant : enseignants) {
+            for (Enseignant enseignant : tousLesEnseignants) {
                 if (enseignant.getSpecialite() != null &&
                         enseignant.getSpecialite().getNom().equals(specialite.getNom())) {
                     System.out.println("- " + enseignant.getNom());
@@ -137,43 +139,56 @@ public class CentreFormationMain {
 
             boolean trouve = false;
 
-            // Rechercher dans les filières
-            for (Filiere filiere : toutesFilieres) {
-                if (filiere.getFormateur().getNom().equalsIgnoreCase(nomFormateur)) {
+            // Recherche dans tous les enseignants
+            for (Enseignant enseignant : tousLesEnseignants) {
+                if (enseignant.getNom().equalsIgnoreCase(nomFormateur)) {
                     System.out.println("\n=== RÉSULTAT RECHERCHE ===");
-                    System.out.println("Formateur trouvé : " + filiere.getFormateur().getNom());
+                    System.out.println("Formateur trouvé : " + enseignant.getNom());
 
-                    // Afficher la spécialité si disponible
-                    if (filiere.getFormateur().getSpecialite() != null) {
-                        System.out.println("Spécialité : " + filiere.getFormateur().getSpecialite().getNom());
+                    // Afficher la spécialité
+                    if (enseignant.getSpecialite() != null) {
+                        System.out.println("Spécialité : " + enseignant.getSpecialite().getNom());
+                    } else {
+                        System.out.println("Spécialité : Aucune");
                     }
 
-                    System.out.println("Filière : " + filiere.getLibelle());
+                    // Vérifier s'il est responsable d'une filière
+                    boolean estResponsable = false;
+                    for (Filiere filiere : toutesFilieres) {
+                        if (filiere.getFormateur().getNom().equalsIgnoreCase(nomFormateur)) {
+                            estResponsable = true;
+                            System.out.println("Filière responsable : " + filiere.getLibelle());
 
-                    // Compter et afficher les étudiants
-                    int compteurEtudiants = 0;
-                    System.out.println("Étudiants inscrits :");
+                            // Afficher les étudiants de cette filière
+                            int compteurEtudiants = 0;
+                            System.out.println("Étudiants inscrits :");
 
-                    for (Etudiant etudiant : etudiants) {
-                        if (etudiant.getFiliere().getLibelle().equals(filiere.getLibelle())) {
-                            compteurEtudiants++;
-                            System.out.println("  - " + etudiant.getPrenom() + " " + etudiant.getNom());
+                            for (Etudiant etudiant : etudiants) {
+                                if (etudiant.getFiliere().getLibelle().equals(filiere.getLibelle())) {
+                                    compteurEtudiants++;
+                                    System.out.println("  - " + etudiant.getPrenom() + " " + etudiant.getNom());
+                                }
+                            }
+
+                            if (compteurEtudiants == 0) {
+                                System.out.println("  Aucun étudiant inscrit");
+                            } else {
+                                System.out.println("Total : " + compteurEtudiants + " étudiant(s)");
+                            }
                         }
                     }
 
-                    if (compteurEtudiants == 0) {
-                        System.out.println("  Aucun étudiant inscrit");
-                    } else {
-                        System.out.println("Total : " + compteurEtudiants + " étudiant(s)");
+                    if (!estResponsable) {
+                        System.out.println("Cet enseignant n'est responsable d'aucune filière.");
                     }
 
                     trouve = true;
-                    break; // On sort de la boucle après avoir trouvé
+                    break; // On sort après avoir trouvé
                 }
             }
 
             if (!trouve) {
-                System.out.println("Aucun formateur trouvé avec le nom : " + nomFormateur);
+                System.out.println("Aucun enseignant trouvé avec le nom : " + nomFormateur);
             }
 
         } else if (choix == 2) {
@@ -188,6 +203,11 @@ public class CentreFormationMain {
                     System.out.println("\n=== RÉSULTAT RECHERCHE ===");
                     System.out.println("Filière trouvée : " + filiere.getLibelle());
                     System.out.println("Formateur : " + filiere.getFormateur().getNom());
+
+                    // Afficher la spécialité du formateur
+                    if (filiere.getFormateur().getSpecialite() != null) {
+                        System.out.println("Spécialité du formateur : " + filiere.getFormateur().getSpecialite().getNom());
+                    }
 
                     // Afficher les étudiants
                     int compteur = 1;
