@@ -2,10 +2,12 @@ public class Filiere {
 
     private String code;
     private String libelle;
+    private Enseignant formateur;
 
-    public Filiere(String code, String libelle) {
+    public Filiere(String code, String libelle, Enseignant formateur) {
         this.code = code;
         this.libelle = libelle;
+        this.formateur = formateur;
     }
 
     public String getCode() {
@@ -20,7 +22,20 @@ public class Filiere {
         return libelle;
     }
 
-    public void setNom(String libelle) {
+    public void setLibelle(String libelle) {
         this.libelle = libelle;
+    }
+
+    public Enseignant getFormateur() {
+        return formateur;
+    }
+
+    public void setFormateur(Enseignant formateur) {
+        this.formateur = formateur;
+    }
+
+    @Override
+    public String toString() {
+        return "Filière : " + getLibelle();
     }
 }

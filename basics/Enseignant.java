@@ -22,4 +22,5 @@ public class Enseignant {
     public void setSpecialite(Specialite specialite) {
         this.specialite = specialite;
     }
+
 }
