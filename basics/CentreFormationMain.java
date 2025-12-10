@@ -1,9 +1,14 @@
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 public class CentreFormationMain {
-    public static void main(String[] args) {
+    // Déclaration des listes comme variables de classe pour y accéder partout
+    private static List<Enseignant> enseignants;
+    private static List<Etudiant> etudiants;
+    private static List<Filiere> toutesFilieres;
 
+    public static void main(String[] args) {
         System.out.println("=== CENTRE DE FORMATION AFPA ===\n");
 
         // Création des 5 spécialités
@@ -15,7 +20,7 @@ public class CentreFormationMain {
 
         List<Specialite> toutesSpecialites = Arrays.asList(javaJee, htmlCss, gestionProjet, js, php);
 
-        List<Enseignant> enseignants = Arrays.asList(
+        enseignants = Arrays.asList(
                 new Enseignant("M. Dupont", javaJee),
                 new Enseignant("Mme. Martin", javaJee),
                 new Enseignant("M. Bernard", php),
@@ -30,6 +35,8 @@ public class CentreFormationMain {
         Filiere marketing = new Filiere("marketing", "Marketing", formateurMarketing);
         Filiere assistanceVie = new Filiere("assistance_vie", "Assistance de vie", formateurAssistance);
 
+        toutesFilieres = Arrays.asList(cda, marketing, assistanceVie);
+
         // 3. Affichage des enseignants par spécialité
         System.out.println("=== LISTE DES ENSEIGNANTS PAR SPÉCIALITÉ ===\n");
 
@@ -40,7 +47,8 @@ public class CentreFormationMain {
             boolean trouve = false;
 
             for (Enseignant enseignant : enseignants) {
-                if (enseignant.getSpecialite().getNom().equals(specialite.getNom())) {
+                if (enseignant.getSpecialite() != null &&
+                        enseignant.getSpecialite().getNom().equals(specialite.getNom())) {
                     System.out.println("- " + enseignant.getNom());
                     trouve = true;
                 }
@@ -49,14 +57,11 @@ public class CentreFormationMain {
             if (!trouve) {
                 System.out.println("Aucun enseignant pour la spécialité " + specialite.getNom());
             }
-
             System.out.println();
         }
 
         // PARTIE ÉTUDIANTS
-        List<Filiere> toutesFilieres = Arrays.asList(cda, marketing, assistanceVie);
-
-        List<Etudiant> etudiants = Arrays.asList(
+        etudiants = Arrays.asList(
                 new Etudiant("Simpson", "Homer", cda),
                 new Etudiant("Simpson", "Bart", cda),
                 new Etudiant("Sultan", "Vanessa", marketing),
@@ -82,7 +87,6 @@ public class CentreFormationMain {
             if (!trouveEtudiant) {
                 System.out.println("Aucun étudiant pour la filière " + filiere.getLibelle());
             }
-
             System.out.println();
         }
 
@@ -90,7 +94,6 @@ public class CentreFormationMain {
         System.out.println("\n=== FORMATEURS ET LISTE DES APPRENANTS PAR FILIÈRE ===\n");
 
         for (Filiere filiere : toutesFilieres) {
-
             System.out.println(filiere.getLibelle());
             System.out.println("Formateur : " + filiere.getFormateur().getNom());
 
@@ -106,10 +109,118 @@ public class CentreFormationMain {
             }
 
             if (!aDesEtudiants) {
-                System.out.println("Pas d’inscrit");
+                System.out.println("Pas d'inscrit");
             }
-
             System.out.println();
         }
+
+        // Appel de la fonction de recherche
+        chercheParFormateurOuFiliere();
+    }
+
+    public static void chercheParFormateurOuFiliere() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("\n=== RECHERCHE ===");
+        System.out.println("Quel type de recherche souhaites-tu ? ");
+        System.out.println("1 : Par nom de formateur");
+        System.out.println("2 : Par nom de filière");
+        System.out.print("Quel est ton choix (1 ou 2) ? ");
+
+        int choix = scanner.nextInt();
+        scanner.nextLine(); // Pour consommer le retour à la ligne
+
+        if (choix == 1) {
+            // Recherche par nom de formateur
+            System.out.print("Quel est le nom du formateur que tu recherches ? ");
+            String nomFormateur = scanner.nextLine();
+
+            boolean trouve = false;
+
+            // Rechercher dans les filières
+            for (Filiere filiere : toutesFilieres) {
+                if (filiere.getFormateur().getNom().equalsIgnoreCase(nomFormateur)) {
+                    System.out.println("\n=== RÉSULTAT RECHERCHE ===");
+                    System.out.println("Formateur trouvé : " + filiere.getFormateur().getNom());
+
+                    // Afficher la spécialité si disponible
+                    if (filiere.getFormateur().getSpecialite() != null) {
+                        System.out.println("Spécialité : " + filiere.getFormateur().getSpecialite().getNom());
+                    }
+
+                    System.out.println("Filière : " + filiere.getLibelle());
+
+                    // Compter et afficher les étudiants
+                    int compteurEtudiants = 0;
+                    System.out.println("Étudiants inscrits :");
+
+                    for (Etudiant etudiant : etudiants) {
+                        if (etudiant.getFiliere().getLibelle().equals(filiere.getLibelle())) {
+                            compteurEtudiants++;
+                            System.out.println("  - " + etudiant.getPrenom() + " " + etudiant.getNom());
+                        }
+                    }
+
+                    if (compteurEtudiants == 0) {
+                        System.out.println("  Aucun étudiant inscrit");
+                    } else {
+                        System.out.println("Total : " + compteurEtudiants + " étudiant(s)");
+                    }
+
+                    trouve = true;
+                    break; // On sort de la boucle après avoir trouvé
+                }
+            }
+
+            if (!trouve) {
+                System.out.println("Aucun formateur trouvé avec le nom : " + nomFormateur);
+            }
+
+        } else if (choix == 2) {
+            // Recherche par nom de filière
+            System.out.print("Quel est le nom de la filière que tu recherches ? ");
+            String nomFiliere = scanner.nextLine();
+
+            boolean trouve = false;
+
+            for (Filiere filiere : toutesFilieres) {
+                if (filiere.getLibelle().equalsIgnoreCase(nomFiliere)) {
+                    System.out.println("\n=== RÉSULTAT RECHERCHE ===");
+                    System.out.println("Filière trouvée : " + filiere.getLibelle());
+                    System.out.println("Formateur : " + filiere.getFormateur().getNom());
+
+                    // Afficher les étudiants
+                    int compteur = 1;
+                    boolean aDesEtudiants = false;
+                    System.out.println("Étudiants inscrits :");
+
+                    for (Etudiant etudiant : etudiants) {
+                        if (etudiant.getFiliere().getLibelle().equals(filiere.getLibelle())) {
+                            System.out.println(compteur + ". " + etudiant.getPrenom() + " " + etudiant.getNom());
+                            compteur++;
+                            aDesEtudiants = true;
+                        }
+                    }
+
+                    if (!aDesEtudiants) {
+                        System.out.println("Pas d'étudiant inscrit");
+                    } else {
+                        System.out.println("Total : " + (compteur-1) + " étudiant(s)");
+                    }
+
+                    trouve = true;
+                    break;
+                }
+            }
+
+            if (!trouve) {
+                System.out.println("Aucune filière trouvée avec le nom : " + nomFiliere);
+            }
+
+        } else {
+            System.out.println("Ce n'était pas le choix attendu (1 ou 2)");
+        }
+
+        scanner.close();
     }
 }
