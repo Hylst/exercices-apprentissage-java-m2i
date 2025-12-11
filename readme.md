@@ -1,4 +1,4 @@
-Exercices et projets Java de ma formation CDA chez M2I. Contient des programmes d'apprentissage Java SE/EE.
+Exercices et projets Java de ma formation CDA chez M2I. Contient des TP et exercices d'apprentissage Java SE/EE.
 
 Structure
 basics/ - Exercices de base (variables, POO, etc.)
