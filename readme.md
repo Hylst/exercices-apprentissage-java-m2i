@@ -5,9 +5,10 @@ basics/ - Exercices de base (variables, POO, etc.)
 projects/ - Projets complets
 resources/ - Notes et ressources
 
-Compilation
+TP_Bibliotheque, TP héritage, TP_CentreFormation, TP héritage, TP_classe_personne, comptage_voyelles.java, somme moy val user + comptage voyelles, devine_nombre.java, moyenne.java, parite.java, questionnaire.java, somme_moy_val_user.java
 
+Compilation :
 javac NomFichier.java
 java NomFichier
 
-_Formation CDA - M2I - Geoffroy Streit_
+Formation CDA - M2I - Geoffroy Streit_
